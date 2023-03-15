@@ -1,0 +1,25 @@
+# Stack entity in the new chunk
+# If u dont have "doMobSpawning" activated, set false
+load-stacked-in-chunk: true
+# Parameters for mobs spawn
+mob:
+  # Name of a stacked mob
+  # %name% - the entity type name
+  # %stack% - the size of the stack
+  name: "&7%name% * %stack%"
+  # experience given by mob
+  experience: 3
+  # blacklisted entity types
+  blacklist:
+    - experience_orb
+    - arrow
+  # loots configured for each mob type
+  # Spawn rate : 1 kill = (looting enchant level) + 1 item
+  loots:
+    pig: porkchop
+# stack radius
+# set high score if u want but it will increase lag
+radius:
+  x: 12
+  y: 5
+  z: 12

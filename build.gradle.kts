@@ -1,6 +1,6 @@
 plugins {
     java
-    "maven-publish"
+    `maven-publish`
     id("com.github.johnrengelman.shadow") version "5.2.0"
 }
 

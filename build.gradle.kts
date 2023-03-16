@@ -4,8 +4,8 @@ plugins {
     id("com.github.johnrengelman.shadow") version "5.2.0"
 }
 
-group = "fr.qg"
-version = "0.1"
+group = "com.github.qg9"
+version = "1.2"
 
 repositories {
     // CENTRAL

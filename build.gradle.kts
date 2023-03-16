@@ -4,7 +4,7 @@ plugins {
     id("com.github.johnrengelman.shadow") version "5.2.0"
 }
 
-group = "com.github.qg9"
+group = "fr.qg9"
 version = "1.2"
 
 repositories {
@@ -45,4 +45,16 @@ java {
 
 tasks.withType<JavaCompile> {
     options.encoding = "UTF-8"
+}
+
+publishing {
+    publications {
+        create<MavenPublication>("maven") {
+            groupId = "fr.qg9"
+            artifactId = "stacker"
+            version = "1.4"
+            
+            from(components["java"])
+        }
+    }
 }

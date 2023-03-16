@@ -1,5 +1,6 @@
 plugins {
     java
+    "maven-publish"
     id("com.github.johnrengelman.shadow") version "5.2.0"
 }
 
@@ -42,23 +43,6 @@ java {
     }
 }
 
-tasks.register("eeee") {
-    println(getStackFromName())
-}
-
-private val STACK_KEY = "stack"
-private val ENTITY_NAME_PLACEHOLDER = "{name}"
-private val ENTITY_STACK_PLACEHOLDER = "{stack}"
-
-private val name: String = "{name} * {stack}"
-
-fun getStackFromName(): Int {
-    val entityName = "ZOMBIE * 5"
-    if (entityName.isEmpty()) return 1
-    val splitted: Array<String> = name.replace("{name}", "ZOMBIE").split(ENTITY_STACK_PLACEHOLDER).toTypedArray()
-    return try {
-        entityName.replace(splitted[0], "").replace(splitted[1], "").toInt()
-    } catch (exception: Exception) {
-        1
-    }
+tasks.withType<JavaCompile> {
+    options.encoding = "UTF-8"
 }

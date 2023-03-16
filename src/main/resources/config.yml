@@ -16,7 +16,7 @@ mob:
   # loots configured for each mob type
   # Spawn rate : 1 kill = (looting enchant level) + 1 item
   loots:
-    pig: porkchop
+    pig: pork
 # stack radius
 # set high score if u want but it will increase lag
 radius:

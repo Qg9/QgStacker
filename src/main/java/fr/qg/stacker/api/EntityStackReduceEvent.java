@@ -2,26 +2,65 @@ package fr.qg.stacker.api;
 
 import fr.qg.stacker.manager.StackManager;
 import org.bukkit.entity.Entity;
+import org.bukkit.entity.Player;
 import org.bukkit.event.Cancellable;
 import org.bukkit.event.HandlerList;
 import org.bukkit.event.entity.EntityEvent;
+import org.bukkit.inventory.ItemStack;
+
+import java.util.List;
 
 public class EntityStackReduceEvent extends EntityEvent implements Cancellable {
 
 	private static final HandlerList handlers = new HandlerList();
 
+	private final Player player;
+
 	private boolean cancelled;
 
 	private final StackManager manager;
 	private final int current;
-	private int reduce;
+	private final List<ItemStack> loots;
+	private int reduce, finalReduce, exp, finalExp;
 
-	public EntityStackReduceEvent(StackManager manager, Entity entity, int current, int reduce) {
+	public EntityStackReduceEvent(StackManager manager, Player damager,
+	                              Entity entity, int current, List<ItemStack> loots, int reduce, int exp) {
 		super(entity);
+		this.player = damager;
 		this.current = current;
-		this.reduce = reduce;
+		this.loots = loots;
 		this.manager = manager;
+
 		this.cancelled = false;
+
+		this.reduce = reduce;
+		this.exp = exp;
+		this.finalReduce = reduce;
+		this.finalExp = exp;
+	}
+
+	public List<ItemStack> getLoots() {
+		return loots;
+	}
+
+	public int getFinalReduce() {
+		return finalReduce;
+	}
+
+	public void setFinalReduce(int finalReduce) {
+		this.finalReduce = finalReduce;
+	}
+
+	public int getFinalExp() {
+		return finalExp;
+	}
+
+	public void setFinalExp(int finalExp) {
+		this.finalExp = finalExp;
+	}
+
+	public Player getDamager() {
+		return player;
 	}
 
 	public int getCurrent() {

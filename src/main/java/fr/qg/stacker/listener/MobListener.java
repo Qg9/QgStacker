@@ -13,6 +13,8 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import javax.inject.Inject;
+import java.util.ArrayList;
+import java.util.List;
 
 public class MobListener implements Listener {
 
@@ -22,7 +24,7 @@ public class MobListener implements Listener {
 	private final StackManager manager;
 	private final DropsManager drops;
 
-	private int exp;
+	private final int exp;
 
 	@Inject
 	public MobListener(JavaPlugin plugin, DropsManager drops, StackManager manager) {
@@ -38,32 +40,30 @@ public class MobListener implements Listener {
 	 */
 	@EventHandler(ignoreCancelled = true)
 	public void onDied(EntityDamageByEntityEvent event) {
-		if (!(event.getEntity() instanceof LivingEntity))return;
-		LivingEntity entity = (LivingEntity) event.getEntity();
 
+		if (!(event.getEntity() instanceof LivingEntity))return;
+		if (!(event.getDamager() instanceof Player))return;
+
+		LivingEntity entity = (LivingEntity) event.getEntity();
+		Player player = (Player) event.getDamager();
+		ItemStack item = player.getItemInHand();
+		if(item == null)item = DEFAULT_ITEM;
 		if ((entity.getHealth() - event.getFinalDamage()) >= 0) return;
 
 		int stack = manager.getStack(entity);
-		if (stack == 1)return;
+		List<ItemStack> loots = new ArrayList<>();
+		loots.add(drops.getLoot(item, entity));
 
-		EntityStackReduceEvent stackEvent = new EntityStackReduceEvent(manager, entity, stack, 1);
+		EntityStackReduceEvent reduceEvent = new EntityStackReduceEvent(manager, player, entity, stack,
+				loots, 1, exp);
 
-		Bukkit.getPluginManager().callEvent(stackEvent);
-
-		if (stackEvent.getReduce() >= stack)return;
+		if (reduceEvent.getReduce() >= stack)return;
 
 		entity.setHealth(entity.getMaxHealth());
 		event.setDamage(0);
-		manager.setStack(entity, stack-stackEvent.getReduce());
+		manager.setStack(entity, stack-reduceEvent.getReduce());
 
-		if (event.getDamager() instanceof Player) {
-			Player player = (Player) event.getDamager();
-			ItemStack item = player.getItemInHand();
-			if(item == null)item = DEFAULT_ITEM;
-			player.getInventory().addItem(drops.getLoot(item, entity));
-			player.giveExp(exp);
-		} else {
-			entity.getWorld().dropItemNaturally(entity.getLocation(), drops.getLoot(DEFAULT_ITEM, entity));
-		}
+		for(ItemStack loot : loots)player.getInventory().addItem(loot);
+		player.giveExp(reduceEvent.getFinalExp());
 	}
 }
